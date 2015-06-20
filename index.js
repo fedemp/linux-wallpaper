@@ -14,7 +14,10 @@ var appsList = [
 		get: ['get',
 			'org.gnome.desktop.background',
 			'picture-uri'
-		]
+		],
+		patch: function(imagePath) {
+			return imagePath.trim().slice(8, -1);
+		}
 	},
 	{
 		cmd: 'setroot',
@@ -108,14 +111,16 @@ exports.get = function get (cb) {
 	var found = false;
 
 	availableApps.forEach(function(app){
-		if (!app.get) { return; }
+		if (!app.get || found) { return; }
 
 		execFile(app.cmd, app.get, function (err, stdout) {
 			if (!stdout || found) {
 				return;
 			}
 			found = true;
-			stdout = stdout.trim().replace('file://','').replace('"','');
+			if (typeof app.patch === 'function') {
+				stdout = app.patch(stdout);
+			}
 			cb(null, stdout);
 		});
 
