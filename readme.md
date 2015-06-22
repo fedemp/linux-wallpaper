@@ -2,8 +2,6 @@
 
 > Get or set the desktop wallpaper on Linux
 
-Supports Unity and GNOME 3.
-
 
 ## Install
 
